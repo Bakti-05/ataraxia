@@ -1,24 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: {{ include "ataraxia.deploymentName" . }}
+  labels:
+    {{- include "ataraxia.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: {{ include "ataraxia.fullname" . }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
+        app: {{ include "ataraxia.fullname" . }}
     spec:
       containers:
-        - image: mysql:8.0
-          name: mysql
+        - image: {{ .Values.deployment.container.image }}
+          name: {{ .Values.deployment.container.name }}
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: password
+              value: {{ .Values.deployment.container.env.MYSQL_ROOT_PASSWORD }}
           ports:
             - containerPort: 3306
               name: mysql
@@ -28,4 +30,4 @@ spec:
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: {{ .Values.deployment.volumes.persistentVolumeClaim.claimName }}

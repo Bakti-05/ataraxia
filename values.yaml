@@ -1,35 +1,31 @@
-# by default use release name if not defined (optional)
-name: ataraxia
+pvc:
+  name: mysql-pv-claim
+  storageClassName: manual
+  accessModes: ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
 
-# numbers of pod replicas
-replicas: 1
+deployment:
+  name: mysql
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+  container:
+    image: mysql:8.0
+    name: mysql
+    env:
+      MYSQL_ROOT_PASSWORD: password
+  volumes:
+    persistentVolumeClaim:
+      claimName: mysql-pv-claim
 
-# service configurations
 service:
+  name: mysql-service
   type: LoadBalancer
-  port: 3306
-  targetPort: 3306
-  protocol: TCP
-
-# rollingUpdate configurations
-rollingUpdate:
-  maxSurge: 25%
-  maxUnavailable: 0
-
-# image configurations
-image:
-  repository: mysql
-  tag: 9.0
-  pullPolicy: IfNotPresent
-
-# environment 
-userPassword: password
-
-# resources configurations
-resources:
-  requests:
-    memory: "128Mi"
-    cpu: "250m"
-  limits:
-    memory: "128Mi"
-    cpu: "250m"
+  selector:
+    app: mysql

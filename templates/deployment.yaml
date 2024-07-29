@@ -1,34 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    {{- include "ataraxia.labels" . | nindent 4 }}
-  name: {{ default $.Release.Name $.Values.name }}-deployment
+  name: mysql
 spec:
-  replicas: {{ $.Values.replicas }}
-  strategy:
-    rollingUpdate:
-      maxSurge: {{ $.Values.rollingUpdate.maxSurge }}
-      maxUnavailable:  {{ $.Values.rollingUpdate.maxUnavailable }}
-    type: RollingUpdate
   selector:
     matchLabels:
-      {{- include "ataraxia.labels" . | nindent 6 }}
+      app: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        {{- include "ataraxia.labels" . | nindent 8 }}
+        app: mysql
     spec:
-      serviceAccountName: {{ default $.Release.Name $.Values.name }}-sa
       containers:
-      - image: {{ $Values.image.repository }}:{{ $Values.image.tag }}
-        name: ataraxia
-        imagePullPolicy: {{ $Values.image.pullPolicy }}
-        ports:
-        - containerPort: {{ $.Values.service.targetPort }}
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-root-password
-              key: {{ $Values.userPassword }}
+        - image: mysql:8.0
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim

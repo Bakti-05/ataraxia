@@ -1,19 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ataraxia.deploymentName" . }}
-  labels:
-    {{- include "ataraxia.labels" . | nindent 4 }}
+  name: {{ .Values.deployment.name }}-deployment
 spec:
   selector:
     matchLabels:
-      app: {{ include "ataraxia.fullname" . }}
+      app: {{ .Values.deployment.selector.matchLabels.app }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: {{ include "ataraxia.fullname" . }}
+        app: {{ .Values.deployment.template.metadata.labels.app }}
     spec:
       containers:
         - image: {{ .Values.deployment.container.image }}

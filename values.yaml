@@ -1,31 +1,34 @@
+# PVC Values 
 pvc:
   name: mysql-pv-claim
-  storageClassName: manual
+  storageClassName: csi-cephfs-sc
   accessModes: ReadWriteMany
   resources:
     requests:
       storage: 5Gi
 
+# Deployment Values 
 deployment:
-  name: mysql
+  name: ataraxia
   selector:
     matchLabels:
-      app: mysql
+      app: ataraxia
   template:
     metadata:
       labels:
-        app: mysql
+        app: ataraxia
   container:
     image: mysql:8.0
-    name: mysql
+    name: ataraxia
     env:
       MYSQL_ROOT_PASSWORD: password
   volumes:
     persistentVolumeClaim:
       claimName: mysql-pv-claim
 
+# Service Values
 service:
-  name: mysql-service
+  name: ataraxia
   type: LoadBalancer
   selector:
-    app: mysql
+    app: ataraxia

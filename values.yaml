@@ -1,15 +1,18 @@
+# Release Name
+custName: ataraxia
+
 # PVC Values 
-pvc:
-  name: mysql-pv-claim
-  storageClassName: csi-cephfs-sc
-  accessModes: ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
+# pvc:
+#   name: mysql-pv-claim
+#   storageClassName: csi-cephfs-sc
+#   accessModes: ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 5Gi
 
 # Deployment Values 
 deployment:
-  name: ataraxia
+  # name: ataraxia
   selector:
     matchLabels:
       app: ataraxia
@@ -28,7 +31,7 @@ deployment:
 
 # Service Values
 service:
-  name: ataraxia
+  # name: ataraxia
   type: LoadBalancer
   selector:
     app: ataraxia

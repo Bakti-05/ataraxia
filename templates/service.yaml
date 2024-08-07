@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name }}-service
+  name: {{ .Values.custName }}-svc
 spec:
   type: {{ .Values.service.type }}
   ports:
